@@ -17,7 +17,5 @@ class MenuBar:
                 self._press_save, _ = imgui.menu_item('Save', 'Ctrl+S', False, True)
                 imgui.end_menu()
 
-        print(self._press_new)
-
         imgui.end_main_menu_bar()
         

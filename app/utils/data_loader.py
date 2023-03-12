@@ -1,6 +1,6 @@
 
-from app.windows.data import DataWindow
-from app.windows.homography_matrix import HomographyWindow
+from app.gui.windows.data_input_window import DataWindow
+from app.gui.windows.homography_matrix_window import HomographyWindow
 
 class DataLoader:
 

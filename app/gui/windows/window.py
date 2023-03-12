@@ -3,7 +3,7 @@ from __future__ import annotations
 import imgui
 
 
-class Window():
+class Window:
     def __init__(self, window_width=300, window_height=200):
         super().__init__()
         self._x = 0
