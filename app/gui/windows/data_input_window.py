@@ -63,7 +63,7 @@ class DataWindow(Window):
             self._result_coords.set_matrix(result_matrix)
 
             # plot
-            real_coord_matrix = self._result_coords.get_matrix()
+            real_coord_matrix = self._real_coords.get_matrix()
             real_x = real_coord_matrix[:, 0]
             real_y = real_coord_matrix[:, 1]
             self._plot_window.plot(real_x, real_y, res_x, res_y, num_coords)
