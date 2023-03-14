@@ -56,7 +56,7 @@ class HomographyWindow(Window):
         imgui.begin_group()
         if imgui.button("Применить"):
             self._matrix = self._homography_matrix.get_matrix()
-            self._shifts = np.zeros((3, 3))
+            self._shifts = np.zeros(self._shape)
         imgui.end_group()
 
         imgui.same_line(spacing=5)
@@ -64,6 +64,15 @@ class HomographyWindow(Window):
         imgui.begin_group()
         if imgui.button("Сбросить"):
             self._homography_matrix.set_matrix(self._matrix)
+            self._shifts = np.zeros(self._shape)
+        imgui.end_group()
+
+        imgui.same_line(spacing=5)
+
+        imgui.begin_group()
+        if imgui.button("Очистить"):
+            self._matrix = np.zeros(self._shape)
+            self._homography_matrix.set_matrix(np.zeros(self._shape))
             self._shifts = np.zeros(self._shape)
         imgui.end_group()
 
