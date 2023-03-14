@@ -53,8 +53,8 @@ class DataWindow(Window):
             self._result_coords.append_coordinates()
             self._real_coords.append_coordinates()
 
-        # If the original homography_matrix or homography homography_matrix has been changed
-        if self._original_coords.get_status() or self._homography_matrix_status:
+        # If the original, real or homography matrix has been changed
+        if self._original_coords.get_status() or self._homography_matrix_status or self._real_coords.get_status():
             # compute result homography_matrix
             num_coords = self._result_coords.get_num_coord()
             result_matrix, res_x, res_y = compute_result_matrix(self._original_coords.get_matrix(),
