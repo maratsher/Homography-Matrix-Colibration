@@ -6,13 +6,16 @@ from app.modules.coordinates_vector.vector3_view import Vector3View
 
 class CoordMatrixView:
 
-    def __init__(self, label: str, region_width: int, region_height: int, amount_start_coord: int, border=True):
+    def __init__(self, label: str, region_width: int, region_height: int, amount_start_coord: int,
+                 default_vector=[0, 0], z_coord=1, border=True):
 
         self._coords = []
         self._label = label
         self._region_width = region_width
         self._region_height = region_height
         self._amount_start_coord = amount_start_coord
+        self._default_vector = default_vector
+        self._z_coord = z_coord
         self._num_coord = 0
         self._border = border
 
@@ -29,7 +32,7 @@ class CoordMatrixView:
 
     def append_coordinates(self, n=1):
         for _ in range(n):
-            self._coords.append(Vector3View(self._label))
+            self._coords.append(Vector3View(self._label, default_val=self._default_vector, z_coord=self._z_coord))
         self._num_coord += n
 
     def get_matrix(self) -> np.ndarray:
