@@ -37,17 +37,17 @@ class HomographyWindow(Window):
         self._homography_matrix.show()
 
         s1, self._shifts[0] = imgui.slider_float3(
-            "s1", *self._shifts[0],
+            "##slider1", *self._shifts[0],
             min_value=-self._N, max_value=self._N,
             format="%.2f")
 
         s2, self._shifts[1] = imgui.slider_float3(
-            "s2", *self._shifts[1],
+            "##slider2", *self._shifts[1],
             min_value=-self._N, max_value=self._N,
             format="%.2f")
 
         s3, self._shifts[2] = imgui.slider_float3(
-            "s3", *self._shifts[2],
+            "##slider3", *self._shifts[2],
             min_value=-self._N, max_value=self._N,
             format="%.2f")
 

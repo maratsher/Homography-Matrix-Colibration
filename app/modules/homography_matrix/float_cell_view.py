@@ -1,14 +1,13 @@
 import imgui
-import itertools
+
+from app.modules.gui_object import GUIObject
 
 
-class FloatCellView:
-    __id_iter = itertools.count()
+class FloatCellView(GUIObject):
 
     def __init__(self, label: str, height: int, width: int, val_f=0, bl=15, formats="%.5f", flag=0):
         super().__init__()
-        self._id = str(next(self.__id_iter))
-        self._label = label + str(self._id)
+        self._label = "##"+label+str(self._id)
         self._height = height
         self._width = width
         self._format = formats

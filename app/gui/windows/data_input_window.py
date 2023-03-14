@@ -24,9 +24,9 @@ class DataWindow(Window):
         super().__init__(WIDTH, HEIGHT)
         self._id = "Input and output matrices"
 
-        self._original_coords = CoordMatrixView("o", int(REGION_WIDTH), int(REGION_HEIGHT), int(AMOUNT_START_COORD))
-        self._real_coords = CoordMatrixView("r", int(REGION_WIDTH), int(REGION_HEIGHT), int(AMOUNT_START_COORD))
-        self._result_coords = CoordMatrixView("", int(REGION_WIDTH), int(REGION_HEIGHT), int(AMOUNT_START_COORD))
+        self._original_coords = CoordMatrixView("original coord", int(REGION_WIDTH), int(REGION_HEIGHT), int(AMOUNT_START_COORD))
+        self._real_coords = CoordMatrixView("real coords", int(REGION_WIDTH), int(REGION_HEIGHT), int(AMOUNT_START_COORD))
+        self._result_coords = CoordMatrixView("result coords", int(REGION_WIDTH), int(REGION_HEIGHT), int(AMOUNT_START_COORD))
 
         self._homography_matrix = np.zeros(HOMOGRAPHY_MATRIX_SHAPE)
         self._homography_matrix_status = False

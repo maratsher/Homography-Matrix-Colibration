@@ -2,15 +2,15 @@ import imgui
 import itertools
 
 from app.modules.coordinates_vector.vector import Vector
+from app.modules.gui_object import GUIObject
 
 
-class Vector3View(Vector):
-    __id_iter = itertools.count()
+class Vector3View(Vector, GUIObject):
 
     def __init__(self, label: str, default_val=[0, 0, 0], format_view="%.2f", flag=0):
-        super().__init__(vector=default_val)
-        self._id = str(next(self.__id_iter))
-        self._label = label + str(self._id)
+        Vector.__init__(self, vector=default_val)
+        GUIObject.__init__(self)
+        self._label = "##"+label + str(self._id)
         self._format = format_view
         self._flag = flag
         self._status = False
