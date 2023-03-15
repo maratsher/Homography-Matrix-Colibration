@@ -5,6 +5,7 @@ import configparser
 from app.gui.windows.window import Window
 from app.gui.windows.data_input_window import DataWindow
 from app.modules.homography_matrix.matrix_view import MatrixView
+from app.stash import Stash
 
 config = configparser.ConfigParser()
 config.read('app.ini')
@@ -18,7 +19,7 @@ WIDTH = int(config["HOMOGRAPHY_MATRIX_WINDOW"]["Width"])
 
 
 class HomographyWindow(Window):
-    def __init__(self, data_window: DataWindow):
+    def __init__(self, stash: Stash):
         super().__init__(WIDTH, HEIGHT)
         self._id = "Homography Matrix"
         self._N = 1
@@ -28,7 +29,8 @@ class HomographyWindow(Window):
         self._spacing = HOMOGRAPHY_MATRIX_CELL_SPACING
         self._matrix = np.zeros(self._shape)
         self._shifts = np.zeros(self._shape)
-        self._data_window = data_window
+
+        self._stash = stash
 
         self._homography_matrix = MatrixView("c", self._cell_height, self._cell_width, self._spacing, self._shape)
 
@@ -76,21 +78,9 @@ class HomographyWindow(Window):
             self._shifts = np.zeros(self._shape)
         imgui.end_group()
 
-        # self._matrix = self.hm.get_homography_matrix()
-
         if s1 or s2 or s3:
             self._homography_matrix.set_shifts(self._matrix, self._shifts)
-        
-        self._data_window.set_homography_matrix(self._homography_matrix.get_matrix())
-        self._data_window.set_homography_matrix_status(self._homography_matrix.get_matrix_status())
 
-        # imgui.text('You wrote: %' + str(list(self._matrix)))
+        self._stash.set_homography_matrix(self._homography_matrix.get_matrix(),
+                                          self._homography_matrix.get_matrix_status())
 
-    def get_matrix(self):
-        return self._matrix
-
-    def set_matrix(self, matrix: np.ndarray):
-        self._matrix = matrix
-
-    def set_n(self, n: float):
-        self._N = n

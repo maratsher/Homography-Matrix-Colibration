@@ -1,11 +1,13 @@
 import imgui
 import numpy as np
 import configparser
+from array import array
 
 from app.gui.windows.window import Window
 from app.modules.coordinates_vector.coord_matrix_view import CoordMatrixView
 from app.gui.windows.plot_window import PlotWindow
 from app.modules.math.homography_functions import compute_result_matrix
+from app.stash import Stash
 
 
 config = configparser.ConfigParser()
@@ -20,7 +22,7 @@ WIDTH = int(config["DATA_INPUT_WINDOW"]["Width"])
 
 
 class DataWindow(Window):
-    def __init__(self, plot_window: PlotWindow()):
+    def __init__(self, stash: Stash):
         super().__init__(WIDTH, HEIGHT)
         self._id = "Input and output matrices"
 
@@ -34,9 +36,14 @@ class DataWindow(Window):
         self._homography_matrix = np.zeros(HOMOGRAPHY_MATRIX_SHAPE)
         self._homography_matrix_status = False
 
-        self._plot_window = plot_window
+        self._stash = stash
 
     def _draw_content(self):
+
+        # get current homography matrix
+        self._homography_matrix, self._homography_matrix_status = self._stash.get_homography_matrix()
+
+        # draw vector2
         imgui.text("Original Coordinates")
         self._original_coords.show("Original Coordinates")
         imgui.text("")
@@ -66,10 +73,7 @@ class DataWindow(Window):
             real_coord_matrix = self._real_coords.get_matrix()
             real_x = real_coord_matrix[:, 0]
             real_y = real_coord_matrix[:, 1]
-            self._plot_window.plot(real_x, real_y, res_x, res_y, num_coords)
+            self._stash.set_plot_data(array("f", real_x), array("f", real_y), array("f", res_x), array("f", res_y),
+                                      num_coords, True)
 
-    def set_homography_matrix(self, matrix: np.ndarray):
-        self._homography_matrix = matrix
 
-    def set_homography_matrix_status(self, status: bool):
-        self._homography_matrix_status = status
