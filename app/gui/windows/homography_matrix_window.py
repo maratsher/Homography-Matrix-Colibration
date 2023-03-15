@@ -24,15 +24,20 @@ class HomographyWindow(Window):
         self._id = "Homography Matrix"
         self._N = 1
         self._shape = HOMOGRAPHY_MATRIX_SHAPE
-        self._cell_height = HOMOGRAPHY_MATRIX_CELL_HEIGHT
-        self._cell_width = HOMOGRAPHY_MATRIX_CELL_WIDTH
-        self._spacing = HOMOGRAPHY_MATRIX_CELL_SPACING
         self._matrix = np.zeros(self._shape)
         self._shifts = np.zeros(self._shape)
 
         self._stash = stash
 
-        self._homography_matrix = MatrixView("c", self._cell_height, self._cell_width, self._spacing, self._shape)
+        self._homography_matrix = MatrixView(label="homography_matrix",
+                                             height_cell=HOMOGRAPHY_MATRIX_CELL_HEIGHT,
+                                             width_cell=HOMOGRAPHY_MATRIX_CELL_WIDTH,
+                                             format_view="%.5f",
+                                             spacing=HOMOGRAPHY_MATRIX_CELL_SPACING,
+                                             shape=self._shape,
+                                             bl=15,
+                                             def_cell_val=0,
+                                             flag=imgui.INPUT_TEXT_AUTO_SELECT_ALL)
 
     def _draw_content(self):
         imgui.text("Homography Matrix")
@@ -82,5 +87,5 @@ class HomographyWindow(Window):
             self._homography_matrix.set_shifts(self._matrix, self._shifts)
 
         self._stash.set_homography_matrix(self._homography_matrix.get_matrix(),
-                                          self._homography_matrix.get_matrix_status())
+                                          self._homography_matrix.get_matrix_changed())
 

@@ -5,14 +5,17 @@ import numpy as np
 
 class MatrixView:
 
-    def __init__(self, label="", height_cell=100, width_cell=100, spacing=15, shape=(3, 3),
-                 flag=imgui.INPUT_TEXT_AUTO_SELECT_ALL):
+    def __init__(self, label: str, height_cell: int, width_cell: int, spacing: int, shape: tuple, format_view: str,
+                 def_cell_val: float, bl: int, flag: int):
         self._cells = []
         self._label = label
         self._height_cell = height_cell
         self._width_cell = width_cell
         self._shape = shape
         self._flag = flag
+        self._bl = bl
+        self._def_cell_val = def_cell_val
+        self._format_view = format_view
         self._spacing = spacing
 
         self._init_cells()
@@ -21,7 +24,13 @@ class MatrixView:
         for i in range(self._shape[0]):
             self._cells.append([])
             for j in range(self._shape[1]):
-                self._cells[i].append(FloatCellView(self._label, self._height_cell, self._width_cell, flag=self._flag))
+                self._cells[i].append(FloatCellView(label=self._label,
+                                                    height=self._height_cell,
+                                                    width=self._width_cell,
+                                                    flag=self._flag,
+                                                    bl=self._bl,
+                                                    val_f=self._def_cell_val,
+                                                    format_view=self._format_view))
 
     def show(self):
         for row in self._cells:
@@ -43,11 +52,11 @@ class MatrixView:
             for j in range(self._shape[1]):
                 self._cells[i][j].set_val(matrix[i][j])
 
-    def get_matrix_status(self) -> bool:
+    def get_matrix_changed(self) -> bool:
         s = False
         for i in range(self._shape[0]):
             for j in range(self._shape[1]):
-                s += self._cells[i][j].get_status()
+                s += self._cells[i][j].get_changed()
         return s
 
     def set_shifts(self, matrix: np.ndarray, shift_matrix: np.ndarray):

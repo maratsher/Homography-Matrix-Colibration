@@ -19,6 +19,8 @@ REGION_HEIGHT = int(config["DATA_INPUT_WINDOW"]["Region_height"])
 AMOUNT_START_COORD = int(config["DATA_INPUT_WINDOW"]["AmountStartedCoord"])
 HEIGHT = int(config["DATA_INPUT_WINDOW"]["Height"])
 WIDTH = int(config["DATA_INPUT_WINDOW"]["Width"])
+GAP_X = int(config["DATA_INPUT_WINDOW"]["Gap_x"])
+GAP_Y = int(config["DATA_INPUT_WINDOW"]["Gap_y"])
 
 
 class DataWindow(Window):
@@ -26,33 +28,53 @@ class DataWindow(Window):
         super().__init__(WIDTH, HEIGHT)
         self._id = "Input and output matrices"
 
-        self._original_coords = CoordMatrixView("original coord", int(REGION_WIDTH), int(REGION_HEIGHT),
-                                                int(AMOUNT_START_COORD), z_coord=1)
-        self._real_coords = CoordMatrixView("real coords", int(REGION_WIDTH), int(REGION_HEIGHT),
-                                            int(AMOUNT_START_COORD), z_coord=0)
-        self._result_coords = CoordMatrixView("result coords", int(REGION_WIDTH), int(REGION_HEIGHT),
-                                              int(AMOUNT_START_COORD))
+        self._original_coords = CoordMatrixView(label="original coord",region_width=int(REGION_WIDTH),
+                                                region_height=int(REGION_HEIGHT),
+                                                amount_start_coord=int(AMOUNT_START_COORD),
+                                                default_vector=[0, 0],
+                                                z_coord=1,
+                                                format_view="%.3f",
+                                                flag=0,
+                                                border=True)
+        self._real_coords = CoordMatrixView(label="real coord",
+                                            region_width=int(REGION_WIDTH),
+                                            region_height=int(REGION_HEIGHT),
+                                            amount_start_coord=int(AMOUNT_START_COORD),
+                                            default_vector=[0, 0],
+                                            z_coord=0,
+                                            format_view="%.3f",
+                                            flag=0,
+                                            border=True)
+        self._result_coords = CoordMatrixView(label="real coord",
+                                              region_width=int(REGION_WIDTH),
+                                              region_height=int(REGION_HEIGHT),
+                                              amount_start_coord=int(AMOUNT_START_COORD),
+                                              default_vector=[0, 0],
+                                              z_coord=1,
+                                              format_view="%.3f",
+                                              flag=0,
+                                              border=True)
 
         self._homography_matrix = np.zeros(HOMOGRAPHY_MATRIX_SHAPE)
-        self._homography_matrix_status = False
+        self._homography_matrix_changed = False
 
         self._stash = stash
 
     def _draw_content(self):
 
         # get current homography matrix
-        self._homography_matrix, self._homography_matrix_status = self._stash.get_homography_matrix()
+        self._homography_matrix, self._homography_matrix_changed = self._stash.get_homography_matrix()
 
         # draw vector2
         imgui.text("Original Coordinates")
         self._original_coords.show("Original Coordinates")
-        imgui.text("")
+        imgui.dummy(GAP_X, GAP_Y)
         imgui.text("Real Coordinates")
         self._real_coords.show("Real Coordinates")
-        imgui.text("")
+        imgui.dummy(GAP_X, GAP_Y)
         imgui.text("Result Coordinates")
         self._result_coords.show("Result Coordinates")
-        imgui.text("")
+        imgui.dummy(GAP_X, GAP_Y)
 
         # press Add coordinate button
         if imgui.button("Add coordinate"):
@@ -61,7 +83,7 @@ class DataWindow(Window):
             self._real_coords.append_coordinates()
 
         # If the original, real or homography matrix has been changed
-        if self._original_coords.get_status() or self._homography_matrix_status or self._real_coords.get_status():
+        if self._original_coords.get_changed() or self._homography_matrix_changed or self._real_coords.get_changed():
             # compute result homography_matrix
             num_coords = self._result_coords.get_num_coord()
             result_matrix, res_x, res_y = compute_result_matrix(self._original_coords.get_matrix(),
