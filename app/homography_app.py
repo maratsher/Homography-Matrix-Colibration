@@ -11,7 +11,7 @@ class Homography(ImGuiApp):
         super().__init__(window_width, window_height, fullscreen)
 
         self._stash = Stash()
-        self.menu_bar = MenuBar()
+        self.menu_bar = MenuBar(self._stash)
         self.plot_window = PlotWindow(self._stash)
         self.data_window = DataWindow(self._stash)
         self.homography_window = HomographyWindow(self._stash)

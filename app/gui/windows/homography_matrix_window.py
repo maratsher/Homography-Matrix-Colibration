@@ -37,9 +37,16 @@ class HomographyWindow(Window):
                                              shape=self._shape,
                                              bl=15,
                                              def_cell_val=0,
-                                             flag=imgui.INPUT_TEXT_AUTO_SELECT_ALL)
+                                             flag=imgui.INPUT_TEXT_CTRL_ENTER_FOR_NEW_LINE)
 
     def _draw_content(self):
+        # pin homography if opened
+        if self._stash.get_is_open_file():
+            self._homography_matrix.set_matrix(self._stash.get_homography_matrix()[0])
+            self._matrix = self._homography_matrix.get_matrix()
+            self._shifts = np.zeros(self._shape)
+            self._stash.set_is_open_file(False)
+        
         imgui.text("Homography Matrix")
         self._homography_matrix.show()
 
@@ -86,6 +93,7 @@ class HomographyWindow(Window):
         if s1 or s2 or s3:
             self._homography_matrix.set_shifts(self._matrix, self._shifts)
 
-        self._stash.set_homography_matrix(self._homography_matrix.get_matrix(),
-                                          self._homography_matrix.get_matrix_changed())
+        if self._homography_matrix.get_matrix_changed():
+            self._stash.set_homography_matrix(self._homography_matrix.get_matrix(),
+                                              self._homography_matrix.get_matrix_changed())
 

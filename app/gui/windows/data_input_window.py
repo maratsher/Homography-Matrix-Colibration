@@ -2,6 +2,7 @@ import imgui
 import numpy as np
 import configparser
 from array import array
+import math
 
 from app.gui.windows.window import Window
 from app.modules.coordinates_vector.coord_matrix_view import CoordMatrixView
@@ -64,6 +65,11 @@ class DataWindow(Window):
 
         # get current homography matrix
         self._homography_matrix, self._homography_matrix_changed = self._stash.get_homography_matrix()
+        
+        # get original and real coords from files, if opened
+        if self._stash.get_is_open_file():
+            self._original_coords.set_matrix(self._stash.get_origin_coords())
+            self._real_coords.set_matrix(self._stash.get_real_coords())
 
         # draw vector2
         imgui.text("Original Coordinates")
@@ -89,6 +95,7 @@ class DataWindow(Window):
             result_matrix, res_x, res_y = compute_result_matrix(self._original_coords.get_matrix(),
                                                                 self._homography_matrix, num_coords)
 
+            result_matrix = result_matrix[:, :-1].astype(float)
             self._result_coords.set_matrix(result_matrix)
 
             # plot
@@ -97,5 +104,11 @@ class DataWindow(Window):
             real_y = real_coord_matrix[:, 1]
             self._stash.set_plot_data(array("f", real_x), array("f", real_y), array("f", res_x), array("f", res_y),
                                       num_coords, True)
+
+            # update stash
+            self._stash.set_real_coords(self._real_coords.get_matrix()[:, :-1])
+            self._stash.set_origin_coords(self._original_coords.get_matrix()[:, :-1])
+
+
 
 

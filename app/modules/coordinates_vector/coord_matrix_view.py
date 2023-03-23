@@ -46,8 +46,14 @@ class CoordMatrixView:
         return m
 
     def set_matrix(self, matrix: np.ndarray):
+        
+        # if not enough cells for setting coords
+        if matrix.shape[0] > self._num_coord:
+            diff = matrix.shape[0] - self._num_coord
+            self.append_coordinates(diff)
+
         for i, vec3 in enumerate(self._coords):
-            vec3.set_vector(matrix[i])
+            vec3.set_vector(np.append(matrix[i], [self._z_coord]))
 
     def get_changed(self) -> bool:
         return sum([vec3.get_changed() for vec3 in self._coords])
