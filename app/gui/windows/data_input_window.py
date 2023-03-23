@@ -2,11 +2,9 @@ import imgui
 import numpy as np
 import configparser
 from array import array
-import math
 
 from app.gui.windows.window import Window
 from app.modules.coordinates_vector.coord_matrix_view import CoordMatrixView
-from app.gui.windows.plot_window import PlotWindow
 from app.modules.math.homography_functions import compute_result_matrix
 from app.stash import Stash
 
@@ -111,7 +109,4 @@ class DataWindow(Window):
             # update stash
             self._stash.set_real_coords(self._real_coords.get_matrix()[:, :-1])
             self._stash.set_origin_coords(self._original_coords.get_matrix()[:, :-1])
-
-
-
 

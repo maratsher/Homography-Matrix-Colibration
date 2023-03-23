@@ -19,7 +19,6 @@ def compute_result_matrix(original_matrix: np.ndarray, homography_matrix: np.nda
 
 
 def compute_plane_for_real(real_x: array, real_y: array, num_coord: int):
-    print("PLANE FOR REAL", num_coord)
     zeros = np.zeros((num_coord, 1))
     np_rm_x = np.asarray(real_x).reshape((num_coord, 1))
     np_rm_y = np.asarray(real_y).reshape((num_coord, 1))
@@ -45,7 +44,6 @@ def compute_plane_for_real(real_x: array, real_y: array, num_coord: int):
 
 
 def compute_plane_for_result(res_x: array, res_y: array, num_coord: int):
-    print("PLANE FOR RESULT", num_coord)
     np_x = np.asarray(res_x).reshape((num_coord, 1))
     np_y = np.asarray(res_y).reshape((num_coord, 1))
 

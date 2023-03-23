@@ -3,7 +3,6 @@ import numpy as np
 import configparser
 
 from app.gui.windows.window import Window
-from app.gui.windows.data_input_window import DataWindow
 from app.modules.homography_matrix.matrix_view import MatrixView
 from app.stash import Stash
 
@@ -104,13 +103,9 @@ class HomographyWindow(Window):
         imgui.end_group()
         imgui.end_group()
 
-
-
-
         if s1 or s2 or s3:
             self._homography_matrix.set_shifts(self._matrix, self._shifts)
 
         if self._homography_matrix.get_matrix_changed():
             self._stash.set_homography_matrix(self._homography_matrix.get_matrix(),
                                               self._homography_matrix.get_matrix_changed())
-

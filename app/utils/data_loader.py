@@ -2,11 +2,7 @@ import tkinter
 from tkinter import filedialog as fd
 import configparser
 import os
-import numpy
 import numpy as np
-
-from app.gui.windows.data_input_window import DataWindow
-from app.gui.windows.homography_matrix_window import HomographyWindow
 
 
 config = configparser.ConfigParser()
@@ -38,10 +34,9 @@ class DataLoader:
         if error_code == 5:
             tkinter.messagebox.showerror(title="Error code 4", message="Директория должна должна быть пустой")
 
+    def _check_project_structure(self) -> bool:
 
-    def _check_project_structure(self, project_path: str) -> bool:
-
-        listdir = os.listdir(project_path)
+        listdir = os.listdir(self._path_to_projects)
         if len(listdir) != 3:
             return False
 
@@ -56,10 +51,8 @@ class DataLoader:
 
         return True
                 
-    def _read_coords(self, path_to_file: str):
-        # matrix = np.zeros((0, 2))
-        print(path_to_file)
-        with open(path_to_file, "r") as file:
+    def _read_coords(self, fn: str):
+        with open(os.path.join(self._path_to_projects,fn), "r") as file:
             lines = file.read().splitlines()
             len_lines = len(lines)
             if len_lines <= AMOUNT_START_COORD:
@@ -75,12 +68,11 @@ class DataLoader:
                     self._show_error_window(2)
                     return False
                 matrix[i] = coords
-        print(matrix)
         return matrix
 
-    def _read_homography_matrix(self, path_to_file: str):
+    def _read_homography_matrix(self, fn: str):
         matrix = np.zeros((3, 3))
-        with open(path_to_file, "r") as file:
+        with open(os.path.join(self._path_to_projects, fn), "r") as file:
             lines = file.read().splitlines()
             if len(lines) != 3:
                 self._show_error_window(3)
@@ -126,13 +118,12 @@ class DataLoader:
             self._show_error_window(4)
             return False
 
-        if self._check_project_structure(self._path_to_projects):
-            if type(original_matrix := self._read_coords(os.path.join(self._path_to_projects, ORIGIN_FN))) == bool:
+        if self._check_project_structure():
+            if type(original_matrix := self._read_coords(ORIGIN_FN)) == bool:
                 return False
-            if type(real_matrix := self._read_coords(os.path.join(self._path_to_projects, REAL_FN))) == bool:
+            if type(real_matrix := self._read_coords(REAL_FN)) == bool:
                 return False
-            if type(homography_matrix := self._read_homography_matrix(os.path.join(self._path_to_projects,
-                                                                                   HOMOGRAPHY_FN))) == bool:
+            if type(homography_matrix := self._read_homography_matrix(HOMOGRAPHY_FN)) == bool:
                 return False
 
             return original_matrix, real_matrix, homography_matrix
@@ -158,7 +149,3 @@ class DataLoader:
             self._write_matrix(matrix=original_matrix, fn=ORIGIN_FN)
             self._write_matrix(matrix=real_matrix, fn=REAL_FN)
             self._write_matrix(matrix=homography_matrix, fn=HOMOGRAPHY_FN)
-                
-
-
-

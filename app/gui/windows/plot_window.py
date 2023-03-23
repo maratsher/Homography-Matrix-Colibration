@@ -36,7 +36,6 @@ class PlotWindow(Window):
 
         implot.begin_plot("plot")
 
-
         # plot scatter
         implot.plot_scatter2("result coord", self._res_x, self._res_y, self._num_coord)
         implot.plot_scatter2("real coord", self._real_x, self._real_y, self._num_coord)
@@ -53,4 +52,3 @@ class PlotWindow(Window):
             implot.plot_line2("result plane", line_x, line_y, 5)
 
         implot.end_plot()
-
