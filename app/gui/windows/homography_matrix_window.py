@@ -22,7 +22,7 @@ class HomographyWindow(Window):
     def __init__(self, stash: Stash):
         super().__init__(WIDTH, HEIGHT)
         self._id = "Homography Matrix"
-        self._N = 1
+        self._interval = 1
         self._shape = HOMOGRAPHY_MATRIX_SHAPE
         self._matrix = np.zeros(self._shape)
         self._shifts = np.zeros(self._shape)
@@ -52,21 +52,34 @@ class HomographyWindow(Window):
 
         s1, self._shifts[0] = imgui.slider_float3(
             "##slider1", *self._shifts[0],
-            min_value=-self._N, max_value=self._N,
+            min_value=-self._interval, max_value=self._interval,
             format="%.2f")
 
         s2, self._shifts[1] = imgui.slider_float3(
             "##slider2", *self._shifts[1],
-            min_value=-self._N, max_value=self._N,
+            min_value=-self._interval, max_value=self._interval,
             format="%.2f")
 
         s3, self._shifts[2] = imgui.slider_float3(
             "##slider3", *self._shifts[2],
-            min_value=-self._N, max_value=self._N,
+            min_value=-self._interval, max_value=self._interval,
             format="%.2f")
 
-        imgui.text("")
+        imgui.dummy(5, 5)
 
+        imgui.begin_group()
+        imgui.begin_group()
+        imgui.text("Интервал")
+        imgui.end_group()
+
+        imgui.begin_group()
+        _, self._interval = imgui.input_float("##input_float", self._interval)
+        imgui.end_group()
+        imgui.end_group()
+
+        imgui.dummy(5, 5)
+
+        imgui.begin_group()
         imgui.begin_group()
         if imgui.button("Применить"):
             self._matrix = self._homography_matrix.get_matrix()
@@ -89,6 +102,10 @@ class HomographyWindow(Window):
             self._homography_matrix.set_matrix(np.zeros(self._shape))
             self._shifts = np.zeros(self._shape)
         imgui.end_group()
+        imgui.end_group()
+
+
+
 
         if s1 or s2 or s3:
             self._homography_matrix.set_shifts(self._matrix, self._shifts)

@@ -79,7 +79,7 @@ class ImGuiApp:
         implot.set_imgui_context(imgui_context)
 
         # Create glfw windows and renderer
-        self.__window = self.init_glfw_window("App", self._window_width, self._window_height, self._fullscreen)
+        self.__window = self.init_glfw_window("Homography App", self._window_width, self._window_height, self._fullscreen)
         self.__renderer = GlfwRenderer(self.__window)
 
         # Init theme for impot and imgui

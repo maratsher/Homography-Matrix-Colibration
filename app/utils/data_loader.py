@@ -16,6 +16,8 @@ ORIGIN_FN = config["DATALOADER"]["Origin_fn"]
 REAL_FN = config["DATALOADER"]["Real_fn"]
 HOMOGRAPHY_FN = config["DATALOADER"]["Homography_fn"]
 
+AMOUNT_START_COORD = int(config["DATA_INPUT_WINDOW"]["AmountStartedCoord"])
+
 
 class DataLoader:
 
@@ -59,11 +61,14 @@ class DataLoader:
         print(path_to_file)
         with open(path_to_file, "r") as file:
             lines = file.read().splitlines()
-            matrix = np.zeros((len(lines), 2))
+            len_lines = len(lines)
+            if len_lines <= AMOUNT_START_COORD:
+                len_lines = AMOUNT_START_COORD
+            matrix = np.zeros((len_lines, 2))
             for i, l in enumerate(lines):
                 try:
                     coords = list(map(float, l.split(" ")))
-                except TypeError:
+                except ValueError:
                     self._show_error_window(1)
                     return False
                 if len(coords) != 2:
@@ -90,11 +95,9 @@ class DataLoader:
                     self._show_error_window(3)
                     return False
                 matrix[i] = col
-        print(matrix)
         return matrix
 
     def _write_matrix(self, matrix: np.ndarray, fn: str):
-        print(matrix)
         with open(os.path.join(self._path_to_projects, fn), "w+") as file:
             for i in range(matrix.shape[0]):
                 file.write(" ".join(str(x) for x in matrix[i]))
@@ -115,7 +118,6 @@ class DataLoader:
 
     def open(self):
         self._path_to_projects = fd.askdirectory(initialdir=self._path_to_projects, title="Выберите проект")
-        print(self._path_to_projects)
 
         if self._path_to_projects == ():
             return False

@@ -29,7 +29,7 @@ class DataWindow(Window):
         super().__init__(WIDTH, HEIGHT)
         self._id = "Input and output matrices"
 
-        self._original_coords = CoordMatrixView(label="original coord",region_width=int(REGION_WIDTH),
+        self._original_coords = CoordMatrixView(label="original coord", region_width=int(REGION_WIDTH),
                                                 region_height=int(REGION_HEIGHT),
                                                 amount_start_coord=int(AMOUNT_START_COORD),
                                                 default_vector=[0, 0],
@@ -70,6 +70,9 @@ class DataWindow(Window):
         if self._stash.get_is_open_file():
             self._original_coords.set_matrix(self._stash.get_origin_coords())
             self._real_coords.set_matrix(self._stash.get_real_coords())
+
+            new_nc = self._original_coords.get_num_coord() - self._result_coords.get_num_coord()
+            self._result_coords.append_coordinates(new_nc)
 
         # draw vector2
         imgui.text("Original Coordinates")

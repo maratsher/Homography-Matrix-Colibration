@@ -24,5 +24,5 @@ class Homography(ImGuiApp):
 
 
 if __name__ == "__main__":
-    app = Homography(1280, 860, fullscreen=False)
+    app = Homography(878, 783, fullscreen=False)
     app.run()
