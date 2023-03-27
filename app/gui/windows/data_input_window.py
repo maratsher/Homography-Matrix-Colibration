@@ -34,7 +34,7 @@ class DataWindow(Window):
                                                 z_coord=1,
                                                 format_view="%.3f",
                                                 flag=0,
-                                                border=True)
+                                                border=False)
         self._real_coords = CoordMatrixView(label="real coord",
                                             region_width=int(REGION_WIDTH),
                                             region_height=int(REGION_HEIGHT),
@@ -43,7 +43,7 @@ class DataWindow(Window):
                                             z_coord=0,
                                             format_view="%.3f",
                                             flag=0,
-                                            border=True)
+                                            border=False)
         self._result_coords = CoordMatrixView(label="real coord",
                                               region_width=int(REGION_WIDTH),
                                               region_height=int(REGION_HEIGHT),
@@ -52,7 +52,7 @@ class DataWindow(Window):
                                               z_coord=1,
                                               format_view="%.3f",
                                               flag=0,
-                                              border=True)
+                                              border=False)
 
         self._homography_matrix = np.zeros(HOMOGRAPHY_MATRIX_SHAPE)
         self._homography_matrix_changed = False
@@ -73,14 +73,27 @@ class DataWindow(Window):
             self._result_coords.append_coordinates(new_nc)
 
         # draw vector2
+        imgui.begin_child("##coords_region", REGION_WIDTH, REGION_HEIGHT, True)
+        imgui.begin_group()
         imgui.text("Original Coordinates")
         self._original_coords.show("Original Coordinates")
-        imgui.dummy(GAP_X, GAP_Y)
+        imgui.end_group()
+
+        imgui.same_line(spacing=10)
+
+        imgui.begin_group()
         imgui.text("Real Coordinates")
         self._real_coords.show("Real Coordinates")
-        imgui.dummy(GAP_X, GAP_Y)
+        imgui.end_group()
+
+        imgui.same_line(spacing=10)
+
+        imgui.begin_group()
         imgui.text("Result Coordinates")
         self._result_coords.show("Result Coordinates")
+        imgui.end_group()
+        imgui.end_child()
+
         imgui.dummy(GAP_X, GAP_Y)
 
         # press Add coordinate button
@@ -88,6 +101,9 @@ class DataWindow(Window):
             self._original_coords.append_coordinates()
             self._result_coords.append_coordinates()
             self._real_coords.append_coordinates()
+
+        if imgui.button("File menu..."):
+            imgui.open_popup("menu")
 
         # If the original, real or homography matrix has been changed
         if self._original_coords.get_changed() or self._homography_matrix_changed or self._real_coords.get_changed():

@@ -25,12 +25,10 @@ class CoordMatrixView:
         self.append_coordinates(n=self._amount_start_coord)
 
     def show(self, label: str):
-        imgui.begin_child(label, self._region_width, self._region_height, self._border)
-
+        imgui.push_item_width(200)
         for vec3 in self._coords:
             vec3.show()
-
-        imgui.end_child()
+        imgui.pop_item_width()
 
     def append_coordinates(self, n=1):
         for _ in range(n):
