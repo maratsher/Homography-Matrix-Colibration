@@ -7,6 +7,8 @@ from app.gui.windows.window import Window
 from app.modules.coordinates_vector.coord_matrix_view import CoordMatrixView
 from app.modules.math.homography_functions import compute_result_matrix
 from app.stash import Stash
+from app.utils.data_loader import DataLoader
+
 
 
 config = configparser.ConfigParser()
@@ -59,6 +61,10 @@ class DataWindow(Window):
 
         self._stash = stash
 
+        # TO DO
+        self._unsaved = ""
+        self._dl = DataLoader()
+
     def _draw_content(self):
 
         # get current homography matrix
@@ -97,13 +103,83 @@ class DataWindow(Window):
         imgui.dummy(GAP_X, GAP_Y)
 
         # press Add coordinate button
-        if imgui.button("Add coordinate"):
+        if imgui.button("Add coordinate", width=120, height=0):
             self._original_coords.append_coordinates()
             self._result_coords.append_coordinates()
             self._real_coords.append_coordinates()
 
-        if imgui.button("File menu..."):
-            imgui.open_popup("menu")
+        imgui.dummy(GAP_X, GAP_Y)
+        imgui.separator()
+        imgui.dummy(GAP_X, GAP_Y)
+
+        if imgui.button("Open", width=120, height=0):
+            imgui.open_popup("open")
+
+        imgui.same_line(spacing=3)
+
+        if imgui.button("Save", width=120, height=0):
+            if self._dl.path_to_projects != "":
+                imgui.open_popup("save")
+            else:
+                imgui.open_popup("save_as")
+
+        imgui.same_line(spacing=3)
+
+        if imgui.button("Save As", width=120, height=0):
+            imgui.open_popup("save_as")
+
+        imgui.text("Current project: "+self._unsaved+self._dl.path_to_projects)
+
+        # open modal window
+        if imgui.begin_popup_modal("open", flags=imgui.WINDOW_ALWAYS_AUTO_RESIZE)[0]:
+            imgui.text("Path to project dir")
+            _, self._dl.path_to_projects = imgui.input_text("##open_input", self._dl.path_to_projects)
+
+            if imgui.button(label="OK", width=120, height=0):
+                if data := self._dl.open():
+                    original_coords, real_coords, homography_matrix = data
+                    self._original_coords.set_matrix(original_coords)
+                    self._real_coords.set_matrix(real_coords)
+                    self._stash.set_homography_matrix(homography_matrix, True)
+                    self._stash.set_is_open_file(True)
+                    imgui.close_current_popup()
+                else:
+                    self._dl.path_to_projects = ""
+
+            imgui.set_item_default_focus()
+            imgui.same_line()
+
+            if imgui.button(label="Cancel", width=120, height=0):
+                imgui.close_current_popup()
+
+            imgui.end_popup()
+
+        # save modal window
+        if imgui.begin_popup_modal("save", flags=imgui.WINDOW_ALWAYS_AUTO_RESIZE)[0]:
+            self._dl.save(self._stash.get_origin_coords(), self._stash.get_real_coords(),
+                          self._stash.get_homography_matrix()[0])
+            self._unsaved = ""
+            imgui.close_current_popup()
+            imgui.end_popup()
+
+        # save_as modal window
+        if imgui.begin_popup_modal("save_as", flags=imgui.WINDOW_ALWAYS_AUTO_RESIZE)[0]:
+            imgui.text("Path to path dir")
+            _, self._dl.path_to_projects = imgui.input_text("##save_as_input", self._dl.path_to_projects)
+
+            if imgui.button(label="OK", width=120, height=0):
+                self._dl.save_as(self._stash.get_origin_coords(), self._stash.get_real_coords(),
+                                 self._stash.get_homography_matrix()[0])
+                self._unsaved = ""
+                imgui.close_current_popup()
+
+            imgui.set_item_default_focus()
+            imgui.same_line()
+
+            if imgui.button(label="Cancel", width=120, height=0):
+                imgui.close_current_popup()
+
+            imgui.end_popup()
 
         # If the original, real or homography matrix has been changed
         if self._original_coords.get_changed() or self._homography_matrix_changed or self._real_coords.get_changed():
@@ -125,4 +201,5 @@ class DataWindow(Window):
             # update stash
             self._stash.set_real_coords(self._real_coords.get_matrix()[:, :-1])
             self._stash.set_origin_coords(self._original_coords.get_matrix()[:, :-1])
+            self._homography_matrix_changed = False
 
