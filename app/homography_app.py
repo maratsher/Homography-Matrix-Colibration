@@ -4,6 +4,8 @@ from app.gui.windows.homography_matrix_window import HomographyWindow
 from app.gui.windows.plot_window import PlotWindow
 from app.stash import Stash
 
+import imgui
+
 
 class Homography(ImGuiApp):
     def __init__(self, window_width, window_height, fullscreen):
@@ -19,7 +21,6 @@ class Homography(ImGuiApp):
         self.homography_window.draw()
         self.plot_window.draw()
 
-
 if __name__ == "__main__":
-    app = Homography(1335, 800, fullscreen=False)
+    app = Homography(1740, 735, fullscreen=False)
     app.run()

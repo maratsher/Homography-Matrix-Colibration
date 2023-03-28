@@ -1,5 +1,5 @@
 import imgui
-from app.modules.homography_matrix.float_cell_view import FloatCellView
+from app.modules.homography_matrix.cell_view import CellView
 import numpy as np
 
 
@@ -24,19 +24,21 @@ class MatrixView:
         for i in range(self._shape[0]):
             self._cells.append([])
             for j in range(self._shape[1]):
-                self._cells[i].append(FloatCellView(label=self._label,
-                                                    height=self._height_cell,
-                                                    width=self._width_cell,
-                                                    flag=self._flag,
-                                                    bl=self._bl,
-                                                    val_f=self._def_cell_val,
-                                                    format_view=self._format_view))
+                self._cells[i].append(CellView(label=self._label,
+                                               height=self._height_cell,
+                                               width=self._width_cell,
+                                               flag=self._flag,
+                                               bl=self._bl,
+                                               val=self._def_cell_val,
+                                               format_view=self._format_view))
 
     def show(self):
         for row in self._cells:
             imgui.begin_group()
             for cell in row:
+                imgui.begin_group()
                 cell.show()
+                imgui.end_group()
                 imgui.same_line(spacing=self._spacing)
             imgui.end_group()
 

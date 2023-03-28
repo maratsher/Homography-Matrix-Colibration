@@ -1,3 +1,4 @@
+import imgui
 from imgui import plot as implot
 import configparser
 from array import array
@@ -34,7 +35,8 @@ class PlotWindow(Window):
         self._real_x, self._real_y, self._res_x, self._res_y, self._num_coord, self._plot_plane\
             = self._stash.get_plot_data()
 
-        implot.begin_plot("plot")
+        w, h = imgui.get_window_size()
+        implot.begin_plot("plot", size=(w-30, h-30))
 
         # plot scatter
         implot.plot_scatter2("result coord", self._res_x, self._res_y, self._num_coord)

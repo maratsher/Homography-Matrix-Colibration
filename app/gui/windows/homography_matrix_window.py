@@ -15,6 +15,8 @@ HOMOGRAPHY_MATRIX_CELL_HEIGHT = int(config["HOMOGRAPHY_MATRIX_WINDOW"]["Cell_hei
 HOMOGRAPHY_MATRIX_CELL_SPACING = int(config["HOMOGRAPHY_MATRIX_WINDOW"]["Spacing"])
 HEIGHT = int(config["HOMOGRAPHY_MATRIX_WINDOW"]["Height"])
 WIDTH = int(config["HOMOGRAPHY_MATRIX_WINDOW"]["Width"])
+GAP_X = int(config["DATA_INPUT_WINDOW"]["Gap_x"])
+GAP_Y = int(config["DATA_INPUT_WINDOW"]["Gap_y"])
 
 
 class HomographyWindow(Window):
@@ -45,67 +47,17 @@ class HomographyWindow(Window):
             self._matrix = self._homography_matrix.get_matrix()
             self._shifts = np.zeros(self._shape)
             self._stash.set_is_open_file(False)
-        
-        imgui.text("Homography Matrix")
+
+        # show homography matrix view
         self._homography_matrix.show()
 
-        s1, self._shifts[0] = imgui.slider_float3(
-            "##slider1", *self._shifts[0],
-            min_value=-self._interval, max_value=self._interval,
-            format="%.2f")
+        imgui.dummy(GAP_X, GAP_Y)
 
-        s2, self._shifts[1] = imgui.slider_float3(
-            "##slider2", *self._shifts[1],
-            min_value=-self._interval, max_value=self._interval,
-            format="%.2f")
+        # press clean button
+        if imgui.button("Clean",  width=120, height=0):
+            self._homography_matrix.set_matrix(np.zeros(HOMOGRAPHY_MATRIX_SHAPE))
 
-        s3, self._shifts[2] = imgui.slider_float3(
-            "##slider3", *self._shifts[2],
-            min_value=-self._interval, max_value=self._interval,
-            format="%.2f")
-
-        imgui.dummy(5, 5)
-
-        imgui.begin_group()
-        imgui.begin_group()
-        imgui.text("Интервал")
-        imgui.end_group()
-
-        imgui.begin_group()
-        _, self._interval = imgui.input_float("##input_float", self._interval)
-        imgui.end_group()
-        imgui.end_group()
-
-        imgui.dummy(5, 5)
-
-        imgui.begin_group()
-        imgui.begin_group()
-        if imgui.button("Применить"):
-            self._matrix = self._homography_matrix.get_matrix()
-            self._shifts = np.zeros(self._shape)
-        imgui.end_group()
-
-        imgui.same_line(spacing=5)
-
-        imgui.begin_group()
-        if imgui.button("Сбросить"):
-            self._homography_matrix.set_matrix(self._matrix)
-            self._shifts = np.zeros(self._shape)
-        imgui.end_group()
-
-        imgui.same_line(spacing=5)
-
-        imgui.begin_group()
-        if imgui.button("Очистить"):
-            self._matrix = np.zeros(self._shape)
-            self._homography_matrix.set_matrix(np.zeros(self._shape))
-            self._shifts = np.zeros(self._shape)
-        imgui.end_group()
-        imgui.end_group()
-
-        if s1 or s2 or s3:
-            self._homography_matrix.set_shifts(self._matrix, self._shifts)
-
+        # if homography matrix
         if self._homography_matrix.get_matrix_changed():
             self._stash.set_homography_matrix(self._homography_matrix.get_matrix(),
                                               self._homography_matrix.get_matrix_changed())
