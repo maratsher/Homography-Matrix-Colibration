@@ -39,12 +39,15 @@ class PlotWindow(Window):
         implot.begin_plot("plot", size=(w-30, h-30))
 
         # plot scatter
+        implot.push_colormap(1)
         implot.plot_scatter2("result coord", self._res_x, self._res_y, self._num_coord)
         implot.plot_scatter2("real coord", self._real_x, self._real_y, self._num_coord)
+        implot.pop_colormap()
 
         # plot plane
         if self._plot_plane:
 
+            implot.push_colormap(1)
             # plot real plane
             line_x, line_y = compute_plane_for_real(self._real_x, self._real_y, self._num_coord)
             implot.plot_line2("real plane", line_x, line_y, 5)
@@ -52,5 +55,6 @@ class PlotWindow(Window):
             # plot result plane
             line_x, line_y = compute_plane_for_result(self._res_x, self._res_y, self._num_coord)
             implot.plot_line2("result plane", line_x, line_y, 5)
+            implot.pop_colormap()
 
         implot.end_plot()
