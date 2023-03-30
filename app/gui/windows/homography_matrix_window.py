@@ -57,7 +57,8 @@ class HomographyWindow(Window):
         if imgui.button("Clean",  width=120, height=0):
             self._homography_matrix.set_matrix(np.zeros(HOMOGRAPHY_MATRIX_SHAPE))
 
-        # if homography matrix
+
+        # if homography matrix changed
         if self._homography_matrix.get_matrix_changed():
             self._stash.set_homography_matrix(self._homography_matrix.get_matrix(),
                                               self._homography_matrix.get_matrix_changed())
