@@ -8,6 +8,7 @@ from app.modules.coordinates_vector.coord_matrix_view import CoordMatrixView
 from app.modules.math.homography_functions import compute_result_matrix
 from app.stash import Stash
 from app.utils.data_loader import DataLoader
+from app.modules.math.compute_error import compute_average_error
 
 
 
@@ -58,6 +59,7 @@ class DataWindow(Window):
 
         self._homography_matrix = np.zeros(HOMOGRAPHY_MATRIX_SHAPE)
         self._homography_matrix_changed = False
+        self._error = np.nan
 
         self._stash = stash
 
@@ -107,6 +109,10 @@ class DataWindow(Window):
             self._original_coords.append_coordinates()
             self._result_coords.append_coordinates()
             self._real_coords.append_coordinates()
+
+        imgui.dummy(3, 3)
+
+        imgui.text("Error: "+str(self._error))
 
         imgui.dummy(GAP_X, GAP_Y)
         imgui.separator()
@@ -203,3 +209,6 @@ class DataWindow(Window):
             self._stash.set_origin_coords(self._original_coords.get_matrix()[:, :-1])
             self._homography_matrix_changed = False
 
+            # compute error
+            real_coord_matrix = real_coord_matrix[:, :-1].astype(float)
+            self._error = compute_average_error(real_coord_matrix, result_matrix)
