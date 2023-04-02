@@ -5,6 +5,7 @@ import configparser
 from app.gui.windows.window import Window
 from app.modules.homography_matrix.matrix_view import MatrixView
 from app.stash import Stash
+from app.modules.math.autoconfigurate_matrix import autoconfigurate_matrix
 
 config = configparser.ConfigParser()
 config.read('app.ini')
@@ -26,7 +27,6 @@ class HomographyWindow(Window):
         self._interval = 1
         self._shape = HOMOGRAPHY_MATRIX_SHAPE
         self._matrix = np.zeros(self._shape)
-        self._shifts = np.zeros(self._shape)
 
         self._stash = stash
 
@@ -45,13 +45,28 @@ class HomographyWindow(Window):
         if self._stash.get_is_open_file():
             self._homography_matrix.set_matrix(self._stash.get_homography_matrix()[0])
             self._matrix = self._homography_matrix.get_matrix()
-            self._shifts = np.zeros(self._shape)
             self._stash.set_is_open_file(False)
 
         # show homography matrix view
         self._homography_matrix.show()
 
         imgui.dummy(GAP_X, GAP_Y)
+
+        # press auto config button
+        if imgui.button("Auto config",  width=120, height=0):
+            original_matrix = self._stash.get_origin_coords()
+            real_matrix = self._stash.get_real_coords()
+            curr_homography_matrix = self._stash.get_homography_matrix()[0]
+            original_matrix = np.concatenate((original_matrix, np.ones((original_matrix.shape[0], 1))), axis=1)
+            real_matrix = np.concatenate((real_matrix, np.zeros((real_matrix.shape[0], 1))), axis=1)
+            print(original_matrix.shape)
+            print(real_matrix.shape)
+            print(curr_homography_matrix.shape)
+            new_homography_matrix = autoconfigurate_matrix(original_matrix, real_matrix, curr_homography_matrix)
+            print("NEW HOMO", new_homography_matrix)
+            self._homography_matrix.set_matrix(new_homography_matrix)
+
+        imgui.same_line(spacing=3)
 
         # press clean button
         if imgui.button("Clean",  width=120, height=0):
