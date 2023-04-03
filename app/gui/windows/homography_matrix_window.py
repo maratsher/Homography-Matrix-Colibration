@@ -53,6 +53,7 @@ class HomographyWindow(Window):
 
         imgui.dummy(GAP_X, GAP_Y)
 
+        # input epsilon
         imgui.text("Epsilon:")
         imgui.same_line(spacing=7)
         imgui.push_item_width(70)

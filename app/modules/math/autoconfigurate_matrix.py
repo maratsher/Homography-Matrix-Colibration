@@ -89,7 +89,7 @@ def autoconfigurate_matrix(gt_img_points, gt_obj_points, H, eps):
     i = 0
     config = False
     while not config:
-        i+=1
+        i += 1
         if i > 700:
             break
         # configurate matrix offsets
@@ -117,6 +117,5 @@ def autoconfigurate_matrix(gt_img_points, gt_obj_points, H, eps):
 
         config = np.all(config_result)
 
-    #estimated_points = calibration_map.convert2world(img_points, H)
 
     return H

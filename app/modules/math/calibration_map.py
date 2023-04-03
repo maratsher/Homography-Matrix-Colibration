@@ -31,10 +31,6 @@ def generate_obj_points(centroids_sets, k=1):
 
 def write_points(points):
     pass
-    # for point in points:
-    #     point_list = list(map(str, point.tolist()))
-    #     print("WRITE POINTS")
-    #     print(", ".join(point_list))
 
 
 def point_to_world(point2d, h_matrix):
@@ -42,43 +38,11 @@ def point_to_world(point2d, h_matrix):
     return point3d[0] / point3d[2], point3d[1] / point3d[2], 0
 
 
-# def plot_map(a, b, x):
-#     positions = []
-#     for pos in a:
-#         positions.append(point_to_world(pos, x))
-#     positions = np.array(positions)
-#
-#     plt.scatter(positions.T[0], positions.T[1], c='red')
-#     plt.scatter(b.T[0], b.T[1], alpha=0.7)
-#     plt.show()
-
-
 def convert2world(img_points, h_matrix):
     obj_points = np.dot(h_matrix, img_points.T).T
     vector = obj_points[:, 2:]
     return np.vstack([(obj_points / vector)[:, :2].T, np.zeros(len(obj_points))]).T
 
-
-# def plot_map_3d(h_matrix, camera_pos=None):
-#     figure = plt.figure()
-#     axis = Axes3D(figure)
-#
-#     y_grid = np.linspace(0, 1080, 21)
-#     x_grid = np.linspace(0, 1920, 21)
-#
-#     img_points = []
-#     for y in y_grid:
-#         for x in x_grid:
-#             img_points.append([x, y, 1])
-#
-#     positions = convert2world(np.array(img_points), h_matrix)
-#
-#     axis.scatter(positions.T[0], positions.T[1])
-#
-#     if camera_pos is not None:
-#         axis.scatter(camera_pos[0], camera_pos[1], camera_pos[2])
-#
-#     plt.show()
 
 
 def calculate_average_error(img_points, obj_points, h_matrix):
