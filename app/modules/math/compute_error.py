@@ -9,7 +9,6 @@ def euclidean_distance(p1: np.ndarray, p2: np.ndarray) -> float:
 
 
 def compute_average_error(m1: np.ndarray, m2: np.ndarray) -> float:
-    print(m1.shape, m2.shape)
     assert m1.shape == m2.shape
     s = 0
     num_coords = m1.shape[0]

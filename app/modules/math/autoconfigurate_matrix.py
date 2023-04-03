@@ -79,50 +79,42 @@ def autoconfigurate_matrix(gt_img_points, gt_obj_points, H, debug=True):
 
     indexes = find_shape_corners(estimated_points)
 
-    print(indexes)
-
     img_points = gt_img_points[indexes]
     obj_points = gt_obj_points[indexes]
     estimated_points = estimated_points[indexes]
 
-    print("OUTPUT MATRIX")
-    print(obj_points)
-    print(estimated_points)
-    print(img_points)
-
     calibration_map.write_points(img_points)
     calibration_map.write_points(obj_points)
 
-    start_time = datetime.datetime.now()
+    #start_time = datetime.datetime.now()
     config = False
     while not config:
+        eps = 0.1
         # configurate matrix offsets
-        autoconfig_matrix_element(img_points, obj_points, H, [0, 2], [0, 0], step=0.01, eps=0.01)
-        autoconfig_matrix_element(img_points, obj_points, H, [1, 2], [0, 1], step=0.01, eps=0.01)
+        autoconfig_matrix_element(img_points, obj_points, H, [0, 2], [0, 0], step=0.01, eps=eps)
+        autoconfig_matrix_element(img_points, obj_points, H, [1, 2], [0, 1], step=0.01, eps=eps)
 
         # configurate matrix x scale
-        autoconfig_matrix_element(img_points, obj_points, H, [0, 0], [1, 0], step=0.00001, eps=0.01)
+        autoconfig_matrix_element(img_points, obj_points, H, [0, 0], [1, 0], step=0.00001, eps=eps)
 
         middle_img_points = np.mean(img_points[2:], axis=0).reshape((1, 3))
         middle_obj_points = np.mean(obj_points[2:], axis=0).reshape((2, 1))
-        autoconfig_matrix_element(middle_img_points, middle_obj_points, H, [0, 1], [0, 0], step=0.0000001, eps=0.01)
+        autoconfig_matrix_element(middle_img_points, middle_obj_points, H, [0, 1], [0, 0], step=0.0000001, eps=eps)
 
-        autoconfig_matrix_element(img_points, obj_points, H, [2, 1], [2, 0], step=0.00001, eps=0.01)
+        autoconfig_matrix_element(img_points, obj_points, H, [2, 1], [2, 0], step=0.00001, eps=eps)
 
-        autoconfig_matrix_element(img_points, obj_points, H, [1, 1], [2, 1], step=0.00001, eps=0.01)
+        autoconfig_matrix_element(img_points, obj_points, H, [1, 1], [2, 1], step=0.00001, eps=eps)
 
         config_result = np.full(6, False, dtype=bool)
-        config_result[0] = verify_configurated(img_points, obj_points, H, [0, 0], eps=0.01)
-        config_result[1] = verify_configurated(img_points, obj_points, H, [0, 1], eps=0.01)
-        config_result[2] = verify_configurated(img_points, obj_points, H, [1, 0], eps=0.01)
-        config_result[3] = verify_configurated(middle_img_points, middle_obj_points, H, [0, 0], eps=0.01)
-        config_result[4] = verify_configurated(img_points, obj_points, H, [2, 0], eps=0.01)
-        config_result[5] = verify_configurated(img_points, obj_points, H, [2, 1], eps=0.01)
+        config_result[0] = verify_configurated(img_points, obj_points, H, [0, 0], eps=eps)
+        config_result[1] = verify_configurated(img_points, obj_points, H, [0, 1], eps=eps)
+        config_result[2] = verify_configurated(img_points, obj_points, H, [1, 0], eps=eps)
+        config_result[3] = verify_configurated(middle_img_points, middle_obj_points, H, [0, 0], eps=eps)
+        config_result[4] = verify_configurated(img_points, obj_points, H, [2, 0], eps=eps)
+        config_result[5] = verify_configurated(img_points, obj_points, H, [2, 1], eps=eps)
 
         config = np.all(config_result)
 
-    estimated_points = calibration_map.convert2world(img_points, H)
-    print("ESTIMATED POINTS")
-    print(estimated_points)
+    #estimated_points = calibration_map.convert2world(img_points, H)
 
     return H

@@ -58,20 +58,17 @@ class HomographyWindow(Window):
             real_matrix = self._stash.get_real_coords()
             curr_homography_matrix = self._stash.get_homography_matrix()[0]
             original_matrix = np.concatenate((original_matrix, np.ones((original_matrix.shape[0], 1))), axis=1)
-            real_matrix = np.concatenate((real_matrix, np.zeros((real_matrix.shape[0], 1))), axis=1)
-            print(original_matrix.shape)
-            print(real_matrix.shape)
-            print(curr_homography_matrix.shape)
-            new_homography_matrix = autoconfigurate_matrix(original_matrix, real_matrix, curr_homography_matrix)
-            print("NEW HOMO", new_homography_matrix)
-            self._homography_matrix.set_matrix(new_homography_matrix)
+            try:
+                new_homography_matrix = autoconfigurate_matrix(original_matrix, real_matrix, curr_homography_matrix)
+                self._homography_matrix.set_matrix(new_homography_matrix)
+            except IndexError:
+                print("Can not config matrix")
 
         imgui.same_line(spacing=3)
 
         # press clean button
         if imgui.button("Clean",  width=120, height=0):
             self._homography_matrix.set_matrix(np.zeros(HOMOGRAPHY_MATRIX_SHAPE))
-
 
         # if homography matrix changed
         if self._homography_matrix.get_matrix_changed():

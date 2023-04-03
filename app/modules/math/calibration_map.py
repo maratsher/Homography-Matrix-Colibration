@@ -30,10 +30,11 @@ def generate_obj_points(centroids_sets, k=1):
 
 
 def write_points(points):
-    for point in points:
-        point_list = list(map(str, point.tolist()))
-        print("WRITE POINTS")
-        print(", ".join(point_list))
+    pass
+    # for point in points:
+    #     point_list = list(map(str, point.tolist()))
+    #     print("WRITE POINTS")
+    #     print(", ".join(point_list))
 
 
 def point_to_world(point2d, h_matrix):
