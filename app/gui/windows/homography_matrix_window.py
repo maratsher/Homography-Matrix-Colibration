@@ -27,6 +27,7 @@ class HomographyWindow(Window):
         self._interval = 1
         self._shape = HOMOGRAPHY_MATRIX_SHAPE
         self._matrix = np.zeros(self._shape)
+        self._eps = 0.1
 
         self._stash = stash
 
@@ -52,6 +53,14 @@ class HomographyWindow(Window):
 
         imgui.dummy(GAP_X, GAP_Y)
 
+        imgui.text("Epsilon:")
+        imgui.same_line(spacing=7)
+        imgui.push_item_width(70)
+        _, self._eps = imgui.input_float("##epsilon_input_float", value=self._eps, format="%.3f")
+        imgui.pop_item_width()
+
+        imgui.dummy(GAP_X, GAP_Y)
+
         # press auto config button
         if imgui.button("Auto config",  width=120, height=0):
             original_matrix = self._stash.get_origin_coords()
@@ -59,7 +68,8 @@ class HomographyWindow(Window):
             curr_homography_matrix = self._stash.get_homography_matrix()[0]
             original_matrix = np.concatenate((original_matrix, np.ones((original_matrix.shape[0], 1))), axis=1)
             try:
-                new_homography_matrix = autoconfigurate_matrix(original_matrix, real_matrix, curr_homography_matrix)
+                new_homography_matrix = autoconfigurate_matrix(original_matrix, real_matrix, curr_homography_matrix,
+                                                               self._eps)
                 self._homography_matrix.set_matrix(new_homography_matrix)
             except IndexError:
                 print("Can not config matrix")

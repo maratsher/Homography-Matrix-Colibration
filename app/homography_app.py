@@ -22,5 +22,5 @@ class Homography(ImGuiApp):
         self.plot_window.draw()
 
 if __name__ == "__main__":
-    app = Homography(1740, 735, fullscreen=False)
+    app = Homography(1740, 770, fullscreen=False)
     app.run()

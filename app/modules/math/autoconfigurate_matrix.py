@@ -73,7 +73,7 @@ def autoconfig_matrix_element(img_points, obj_points, h_matrix, h_idx_config, p_
             break
 
 
-def autoconfigurate_matrix(gt_img_points, gt_obj_points, H, debug=True):
+def autoconfigurate_matrix(gt_img_points, gt_obj_points, H, eps):
     estimated_points = calibration_map.convert2world(gt_img_points, H)
     estimated_points = estimated_points[:, :2]
 
@@ -86,10 +86,12 @@ def autoconfigurate_matrix(gt_img_points, gt_obj_points, H, debug=True):
     calibration_map.write_points(img_points)
     calibration_map.write_points(obj_points)
 
-    #start_time = datetime.datetime.now()
+    i = 0
     config = False
     while not config:
-        eps = 0.1
+        i+=1
+        if i > 700:
+            break
         # configurate matrix offsets
         autoconfig_matrix_element(img_points, obj_points, H, [0, 2], [0, 0], step=0.01, eps=eps)
         autoconfig_matrix_element(img_points, obj_points, H, [1, 2], [0, 1], step=0.01, eps=eps)
