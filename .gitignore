@@ -3,3 +3,5 @@ __pycache__/
 .idea/
 .vscode/
 .python-version
+app.ini
+imgui.ini
